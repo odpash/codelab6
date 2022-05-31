@@ -7,6 +7,8 @@ import common.net.CommandResult;
 import common.net.Request;
 import common.net.ResultStatus;
 
+import java.net.DatagramPacket;
+
 /**
  * 'info' command. Prints information about the collection.
  */
@@ -27,8 +29,9 @@ public class InfoCommand extends Command {
 
             Request<String> request = new Request<>(getName(), null);
             CommandResult result = requestSender.sendRequest(request);
-            if (result.status == ResultStatus.OK)
+            if (result.status == ResultStatus.OK) {
                 Interactor.println(result.message);
+            }
             else
                 Interactor.printError(result.message);
         } catch (WrongAmountOfArgumentsException exception) {

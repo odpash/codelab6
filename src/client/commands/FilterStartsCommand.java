@@ -25,8 +25,8 @@ public class FilterStartsCommand extends Command {
     public void execute(String argument) {
         try {
             if (argument.isEmpty()) throw new WrongAmountOfArgumentsException();
-            Long expelledStudents = Long.parseLong(argument);
-            Request<Long> request = new Request<>(getName(), expelledStudents);
+            String arg = argument;
+            Request<String> request = new Request<>(getName(), arg);
             CommandResult result = requestSender.sendRequest(request);
             if (result.status == ResultStatus.OK)
                 Interactor.println(result.message);

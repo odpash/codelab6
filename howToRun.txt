@@ -1,0 +1,2 @@
+compile: javac -d bin ./src/models/* ./src/utils/* ./src/Main.java
+execute: java -classpath ./bin Main /Users/olegpash/IdeaProjects/lab5-prog/collection.csv

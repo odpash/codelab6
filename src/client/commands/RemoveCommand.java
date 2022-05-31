@@ -28,9 +28,9 @@ public class RemoveCommand extends Command {
     public void execute(String stringArgument) {
         try {
             if (stringArgument.isEmpty()) throw new WrongAmountOfArgumentsException();
-            Integer id = Integer.parseInt(stringArgument);
+            Long id = Long.parseLong(stringArgument);
 
-            Request<Integer> request = new Request<>(getName(), id);
+            Request<Long> request = new Request<>(getName(), id);
             CommandResult result = requestSender.sendRequest(request);
             if (result.status == ResultStatus.OK)
                 Interactor.println(result.message);

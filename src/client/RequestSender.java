@@ -33,7 +33,7 @@ public class RequestSender {
             try{
                 DatagramSocket clientSocket = new DatagramSocket();
                 InetAddress IPAddress = InetAddress.getByName("localhost");
-                byte[] receivingDataBuffer = new byte[1024];
+                byte[] receivingDataBuffer = new byte[4096];
 
                 ByteArrayOutputStream bStream = new ByteArrayOutputStream();
                 ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -44,12 +44,10 @@ public class RequestSender {
                 clientSocket.send(sendingPacket);
                 DatagramPacket receivingPacket = new DatagramPacket(receivingDataBuffer, receivingDataBuffer.length);
                 clientSocket.receive(receivingPacket);
-
                 ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
                 CommandResult result = (CommandResult) iStream.readObject();
                 iStream.close();
                 clientSocket.close();
-
                 if(attempts != 0){
                     System.out.println("Подключение восстановлено.");
                 }

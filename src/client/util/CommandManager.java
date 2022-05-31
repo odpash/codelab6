@@ -17,7 +17,7 @@ public class CommandManager {
     public CommandManager(RequestSender con, Scanner scanner){
         registerCommand(new AddCommand(con, scanner));
         registerCommand(new AddIfCommand(con, scanner));
-        registerCommand(new ClearCommand());
+        registerCommand(new ClearCommand(con, scanner));
         registerCommand(new CountByGenreCommand(con, scanner));
         registerCommand(new ExecuteCommand(this, con));
         registerCommand(new ExitCommand());

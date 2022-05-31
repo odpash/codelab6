@@ -3,18 +3,23 @@ package client.commands;
 
 import client.RequestSender;
 import client.util.Interactor;
+import common.exceptions.IncorrectInputInScriptException;
 import common.exceptions.WrongAmountOfArgumentsException;
 import common.net.CommandResult;
 import common.net.Request;
 import common.net.ResultStatus;
 
+import java.util.Scanner;
+
 /**
  * 'filter_greater_than_expelled_students' command.
  */
 public class FilterContainsCommand extends Command {
-
+    private Scanner scanner;
     public FilterContainsCommand(RequestSender requestSender) {
         super(requestSender);
+        Scanner scanner = new Scanner(System.in);
+        this.scanner = scanner;
     }
 
     /**
@@ -26,8 +31,8 @@ public class FilterContainsCommand extends Command {
     public void execute(String argument) {
         try {
             if (argument.isEmpty()) throw new WrongAmountOfArgumentsException();
-            Long expelledStudents = Long.parseLong(argument);
-            Request<Long> request = new Request<>(getName(), expelledStudents);
+            String name = argument;
+            Request<String> request = new Request<>(getName(), name);
             CommandResult result = requestSender.sendRequest(request);
             if (result.status == ResultStatus.OK)
                 Interactor.println(result.message);
@@ -42,7 +47,7 @@ public class FilterContainsCommand extends Command {
 
     @Override
     public String getName() {
-        return "filter_contains";
+        return "filter_contains_name";
     }
 
     @Override

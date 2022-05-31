@@ -3,11 +3,8 @@ package server.util;
 import common.model.MusicBand;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Csv executing
@@ -23,7 +20,7 @@ public class FileManager {
      * @param collection
      * @throws IOException
      */
-    public void writeCollection(TreeSet<MusicBand> collection, String filePath) throws IOException {
+    public void writeCollection(TreeSet<MusicBand> collection) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "MacCyrillic"));
         bw.append("id (авто)");
         bw.append(",");
@@ -62,8 +59,12 @@ public class FileManager {
             bw.append(",");
             bw.append(element.getDescription());
             bw.append(",");
-            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            bw.append(element.getEstablishmentDate().format(formatter2));
+            try {
+                DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                bw.append(element.getEstablishmentDate().format(formatter2));
+            } catch (Exception e) {
+                bw.append("");
+            }
             bw.append(",");
             bw.append(element.getGenre().name());
             bw.append(",");
@@ -83,7 +84,7 @@ public class FileManager {
     }
 
 
-    public TreeSet<MusicBand> readCollection(String filePath) throws FileNotFoundException {
+    public TreeSet<MusicBand> readCollection() throws FileNotFoundException {
         InputStream targetStream = null;
         try {
             File initialFile = new File(filePath);

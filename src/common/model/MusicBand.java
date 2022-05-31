@@ -35,6 +35,8 @@ public class MusicBand implements Comparable<MusicBand>{
     }
 
     public MusicBand(String name, Coordinates coordinates, ZonedDateTime creationDate, Integer numberOfParticipants, String description, LocalDateTime establishmentDate, MusicGenre genre, Album bestAlbum) {
+        lastId++;
+        this.id = lastId;
         this.name = name;
         this.coordinates = coordinates;
         this.creationDate = creationDate;

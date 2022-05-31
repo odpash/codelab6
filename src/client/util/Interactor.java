@@ -8,8 +8,10 @@ import common.model.Album;
 import common.model.Coordinates;
 import common.model.MusicGenre;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -253,13 +255,12 @@ public class Interactor {
         String element = "";
         while (true) {
             try {
-                System.out.println("Введите количество треков:");
+                System.out.println("Введите дату публикации:");
                 displayInput();
                 element = scanner.nextLine().trim();
                 if (fileMode) System.out.println(element);
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                return LocalDateTime.parse(element, formatter);
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+                return LocalDate.parse(element, dtf).atStartOfDay();
 
             } catch (NoSuchElementException exception) {
                 printError("Число не распознано!");

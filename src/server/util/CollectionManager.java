@@ -7,16 +7,25 @@ import common.net.CommandResult;
 import common.net.Request;
 import common.net.ResultStatus;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class CollectionManager extends DataManager {
     private final FileManager fileManager;
+    private ZonedDateTime lastInitTime;
+    private ZonedDateTime lastSaveTime;
     private TreeSet<MusicBand> musicBandCollection = new TreeSet<>();
     private final Comparator<MusicBand> sortByName = Comparator.comparing(MusicBand::getName);
-    public CollectionManager(FileManager fileManager) {
+    public CollectionManager(FileManager fileManager) throws FileNotFoundException {
         this.fileManager = fileManager;
+        this.lastInitTime = null;
+        this.lastSaveTime = null;
+        loadCollection();
     }
 
     public MusicBand getLast() {
@@ -63,7 +72,7 @@ public class CollectionManager extends DataManager {
     }
 
     @Override
-    public CommandResult countByGenre(Request<?> request) {
+    public CommandResult count_by_genre(Request<?> request) {
         try {
             MusicGenre musicGenre = (MusicGenre) request.entity;
             int num = (int) musicBandCollection.stream()
@@ -86,7 +95,7 @@ public class CollectionManager extends DataManager {
     }
 
     @Override
-    public CommandResult filterContains(Request<?> request) {
+    public CommandResult filter_contains_name(Request<?> request) {
         try {
             String text = (String) request.entity;
             String result = musicBandCollection.stream()
@@ -105,7 +114,7 @@ public class CollectionManager extends DataManager {
         try {
             String text = (String) request.entity;
             String result = musicBandCollection.stream()
-                    .filter(MusicBand -> MusicBand.getName().contains(text))
+                    .filter(MusicBand -> MusicBand.getName().startsWith(text))
                     .sorted(sortByName)
                     .map(MusicBand::toString)
                     .collect(Collectors.joining("\n"));
@@ -122,27 +131,120 @@ public class CollectionManager extends DataManager {
 
     @Override
     public CommandResult info(Request<?> request) {
-        return null;
+        ZonedDateTime lastInitTime = getLastInitTime();
+        String lastInitTimeString = (lastInitTime == null) ? "в данной сессии инициализации еще не происходило" :
+                lastInitTime.toString();
+
+        ZonedDateTime lastSaveTime = getLastSaveTime();
+        String lastSaveTimeString = (lastSaveTime == null) ? "в данной сессии сохранения еще не происходило" :
+                lastSaveTime.toString();
+
+        String result = "" +
+                " Тип: " + collectionType() + "\n" +
+                " Количество элементов: " + collectionSize() + "\n" +
+                " Дата последнего сохранения: " + lastSaveTimeString + "\n" +
+                " Дата последней инициализации: " + lastInitTimeString;
+        return new CommandResult(ResultStatus.OK, result);
     }
 
     @Override
     public CommandResult remove(Request<?> request) {
-        return null;
+        try {
+            Long id = (Long) request.entity;
+            if (musicBandCollection.stream().noneMatch(MusicBand -> MusicBand.getId().equals(id)))
+                return new CommandResult(ResultStatus.ERROR, "Группы с таким ID не существует");
+            musicBandCollection.removeIf(studyGroup -> studyGroup.getId().equals(id));
+            return new CommandResult(ResultStatus.OK, "Группа успешно удалена");
+        } catch (Exception exception) {
+            return new CommandResult(ResultStatus.ERROR, "Передан аргумент другого типа");
+        }
     }
+
+    @Override
+    public CommandResult show(Request<?> request) {
+        StringBuilder result = new StringBuilder();
+        for (MusicBand element : musicBandCollection) {
+            result.append(element.toString()).append("\n");
+        }
+        return new CommandResult(ResultStatus.OK, result.toString());
+    }
+
 
     @Override
     public CommandResult removeGreater(Request<?> request) {
-        return null;
+        try {
+            MusicBand musicBand = (MusicBand) request.entity;
+            int last = musicBandCollection.size();
+            musicBandCollection.removeIf(musicBand1 -> musicBand1.compareTo(musicBand) > 0);
+            return new CommandResult(ResultStatus.OK, "Удалено групп: " + (last - musicBandCollection.size()));
+        } catch (Exception exception) {
+            return new CommandResult(ResultStatus.ERROR, "Передан аргумент другого типа");
+        }
     }
 
-    @Override
-    public CommandResult save(Request<?> request) {
-        return null;
+    public CommandResult save(Request<?> request) throws IOException {
+        saveCollection();
+        return new CommandResult(ResultStatus.OK, "Файл успешно сохранен!");
     }
 
     @Override
     public CommandResult update(Request<?> request) {
-        return null;
+        try {
+            MusicBand musicBand = (MusicBand) request.entity;
+            if (getById(musicBand.getId()) == null)
+                return new CommandResult(ResultStatus.ERROR, "Группы с таким ID не существует");
+            musicBandCollection.stream()
+                    .filter(studyGroup1 -> studyGroup1.getId().equals(musicBand.getId()))
+                    .forEach(studyGroup1 -> studyGroup1.update(musicBand));
+            return new CommandResult(ResultStatus.OK, "Группа успешно обновлена");
+        } catch (Exception exception) {
+            return new CommandResult(ResultStatus.ERROR, "Передан аргумент другого типа");
+        }
     }
 
+    public MusicBand getById(Long id) {
+        return musicBandCollection.stream()
+                .filter(MusicBand -> MusicBand.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    public String collectionType() {
+        return musicBandCollection.getClass().getName();
+    }
+
+    /**
+     * @return Size of the collection.
+     */
+    public int collectionSize() {
+        return musicBandCollection.size();
+    }
+
+
+    public void saveCollection() throws IOException {
+        fileManager.writeCollection(musicBandCollection);
+        lastSaveTime = ZonedDateTime.now();
+    }
+
+    /**
+     * Loads the collection from file.
+     */
+    private void loadCollection() throws FileNotFoundException {
+        musicBandCollection = fileManager.readCollection();
+        lastInitTime = ZonedDateTime.now();
+    }
+
+    public NavigableSet<MusicBand> getCollection() {
+        return musicBandCollection;
+    }
+
+
+    public ZonedDateTime getLastInitTime() {
+        return lastInitTime;
+    }
+
+    public ZonedDateTime getLastSaveTime() {
+        return lastSaveTime;
+    }
 }

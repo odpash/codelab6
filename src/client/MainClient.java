@@ -16,7 +16,7 @@ import static server.MainServer.SERVICE_PORT;
 public class MainClient {
     public final static int port = Config.PORT;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {;
         Scanner scanner = new Scanner(System.in);
         RequestSender requestSender = new RequestSender(port);
         CommandManager commandManager = new CommandManager(requestSender, scanner);
@@ -24,6 +24,7 @@ public class MainClient {
 
         String input;
         do {
+            System.out.print("Введите команду: ");
             if (!scanner.hasNextLine()) return;
             input = scanner.nextLine();
             try {
@@ -35,11 +36,3 @@ public class MainClient {
         } while (!input.equals("exit"));
     }
 }
-
-// TODO: ПЛАН-КАПКАН
-//  1) Расписать команды на клиенте (~ чвс): до 3:30
-//  2) Расписать добавление команд на клиенте (~ час) до 4:30
-//  3) Расписать принятие команд на хосте (~ час) до 5:30
-//  4) Расписать выполнение команд на хосте (~ час) до 6:30
-//  5) Small fixes and закинуть и запустить на сервере (~ час) до 7:30
-//  6) Fixes from 7:30 to 9:00 (~ час)
