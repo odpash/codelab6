@@ -18,6 +18,9 @@ public class ExecutionService {
         initCommands();
     }
 
+    /**
+     * Init commands.
+     */
     private void initCommands() {
         commands.put("add", dataManager::add);
         commands.put("add_if_max", dataManager::addIf);

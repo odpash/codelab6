@@ -8,7 +8,7 @@ import common.net.Request;
 import common.net.ResultStatus;
 
 /**
- * 'filter_greater_than_expelled_students' command.
+ * 'filter_starts_with_name' command.
  */
 public class FilterStartsCommand extends Command {
 

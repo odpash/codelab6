@@ -27,17 +27,29 @@ public class CollectionManager extends DataManager {
         this.lastSaveTime = null;
         loadCollection();
     }
-
+    /**
+     * Get last object.
+     */
     public MusicBand getLast() {
         if (musicBandCollection.isEmpty()) return null;
         return musicBandCollection.last();
     }
 
+    /**
+     * Generates next id's.
+     */
     @Override
     protected Long generateNextId() {
-        return getLast().getId() + 1;
+        if (getLast() != null) {
+            return getLast().getId() + 1;
+        }
+        return 1L;
     }
 
+
+    /**
+     * add to collection.
+     */
     @Override
     public CommandResult add(Request<?> request) {
         try {
@@ -50,6 +62,10 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * add to collection if.
+     */
     @Override
     public CommandResult addIf(Request<?> request) {
         try {
@@ -65,12 +81,20 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * clear collection.
+     */
     @Override
     public CommandResult clear(Request<?> request) {
         musicBandCollection.clear();
         return new CommandResult(ResultStatus.OK, "Элементы успешно удалены из коллекции");
     }
 
+
+    /**
+     * Count by current genre.
+     */
     @Override
     public CommandResult count_by_genre(Request<?> request) {
         try {
@@ -84,16 +108,28 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * execute commands from file.
+     */
     @Override
     public CommandResult execute(Request<?> request) {
         return null;
     }
 
+
+    /**
+     * exit from program
+     */
     @Override
     public CommandResult exit(Request<?> request) {
         return null;
     }
 
+
+    /**
+     * return text about objects that contain subtext in their text.
+     */
     @Override
     public CommandResult filter_contains_name(Request<?> request) {
         try {
@@ -109,6 +145,9 @@ public class CollectionManager extends DataManager {
         }
     }
 
+    /**
+     * return text about objects that contain subtext at start of their text
+     */
     @Override
     public CommandResult filterStarts(Request<?> request) {
         try {
@@ -124,11 +163,19 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * Help command. no more...
+     */
     @Override
     public CommandResult help(Request<?> request) {
         return null;
     }
 
+
+    /**
+     * return collection info.
+     */
     @Override
     public CommandResult info(Request<?> request) {
         ZonedDateTime lastInitTime = getLastInitTime();
@@ -147,6 +194,10 @@ public class CollectionManager extends DataManager {
         return new CommandResult(ResultStatus.OK, result);
     }
 
+
+    /**
+     * remove by id command.
+     */
     @Override
     public CommandResult remove(Request<?> request) {
         try {
@@ -160,6 +211,10 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * show text about all collection objects.
+     */
     @Override
     public CommandResult show(Request<?> request) {
         StringBuilder result = new StringBuilder();
@@ -169,7 +224,9 @@ public class CollectionManager extends DataManager {
         return new CommandResult(ResultStatus.OK, result.toString());
     }
 
-
+    /**
+     * remove greater object.
+     */
     @Override
     public CommandResult removeGreater(Request<?> request) {
         try {
@@ -182,19 +239,27 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * save collection to file.
+     */
     public CommandResult save(Request<?> request) throws IOException {
         saveCollection();
         return new CommandResult(ResultStatus.OK, "Файл успешно сохранен!");
     }
 
+
+    /**
+     * update object by id.
+     */
     @Override
     public CommandResult update(Request<?> request) {
         try {
             MusicBand musicBand = (MusicBand) request.entity;
-            if (getById(musicBand.getId()) == null)
+            if (getById(musicBand.getId() - 1) == null)
                 return new CommandResult(ResultStatus.ERROR, "Группы с таким ID не существует");
             musicBandCollection.stream()
-                    .filter(studyGroup1 -> studyGroup1.getId().equals(musicBand.getId()))
+                    .filter(studyGroup1 -> studyGroup1.getId().equals(musicBand.getId() - 1))
                     .forEach(studyGroup1 -> studyGroup1.update(musicBand));
             return new CommandResult(ResultStatus.OK, "Группа успешно обновлена");
         } catch (Exception exception) {
@@ -202,6 +267,10 @@ public class CollectionManager extends DataManager {
         }
     }
 
+
+    /**
+     * get MusicBand by Id.
+     */
     public MusicBand getById(Long id) {
         return musicBandCollection.stream()
                 .filter(MusicBand -> MusicBand.getId().equals(id))
@@ -209,7 +278,9 @@ public class CollectionManager extends DataManager {
                 .orElse(null);
     }
 
-
+    /**
+     * collection Type.
+     */
     public String collectionType() {
         return musicBandCollection.getClass().getName();
     }

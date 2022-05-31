@@ -13,7 +13,7 @@ import java.util.Objects;
 @XmlRootElement(name="Coordinates")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Coordinates implements Serializable {
-    private static final long serialVersionUID = 0xABBA;
+    private static final long serialVersionUID = 0xDADA;
     private long x; //Значение поля должно быть больше -512, Поле не может быть null
     private long y;
 

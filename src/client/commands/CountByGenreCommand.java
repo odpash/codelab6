@@ -12,7 +12,7 @@ import common.net.ResultStatus;
 import java.util.Scanner;
 
 /**
- * 'count_by_group_admin_command' command. Prints amount of groups with the same admin
+ * 'count_by_genre' command. Prints amount of groups with the same admin
  */
 public class CountByGenreCommand extends Command{
     private Scanner scanner;

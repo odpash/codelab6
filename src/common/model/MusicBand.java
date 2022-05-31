@@ -1,6 +1,7 @@
 package common.model;
 
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -11,7 +12,8 @@ import java.util.Objects;
 /**
  * MusicBand data class
  */
-public class MusicBand implements Comparable<MusicBand>{
+public class MusicBand implements Comparable<MusicBand>, Serializable {
+    private static final long serialVersionUID = 0xDEAD;
     private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -203,7 +205,7 @@ public class MusicBand implements Comparable<MusicBand>{
     }
     /**
      * Like equals but id doesn't matter
-     * @param musicBand - StudyGroup object to compare
+     * @param musicBand - object to compare
      * @return true if all fields of objects are equal
      */
     public boolean similar(MusicBand musicBand) {
@@ -224,7 +226,7 @@ public class MusicBand implements Comparable<MusicBand>{
 
     @Override
     public String toString() {
-        return "StudyGroup{" +
+        return "MusicBand{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", coordinates=" + coordinates.toString() +

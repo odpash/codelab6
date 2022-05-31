@@ -47,6 +47,7 @@ public class AddCommand extends Command {
                     Interactor.askGenre(scanner),
                     Interactor.askBestAlbum(scanner)
             );
+            System.out.println(musicBand);
 
             Request<MusicBand> request = new Request<>(getName(), musicBand);
             CommandResult result = requestSender.sendRequest(request);

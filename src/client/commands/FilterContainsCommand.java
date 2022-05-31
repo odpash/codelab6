@@ -12,7 +12,7 @@ import common.net.ResultStatus;
 import java.util.Scanner;
 
 /**
- * 'filter_greater_than_expelled_students' command.
+ * 'filter_contains_name' command.
  */
 public class FilterContainsCommand extends Command {
     private Scanner scanner;

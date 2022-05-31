@@ -10,7 +10,7 @@ import common.net.ResultStatus;
 import java.util.Scanner;
 
 /**
- * 'info' command. Prints information about the collection.
+ * 'clear' command. Prints information about the collection.
  */
 public class ClearCommand extends Command {
 
@@ -18,10 +18,6 @@ public class ClearCommand extends Command {
         super(requestSender);
     }
 
-    /**
-     * Executes the command.
-     * @return Command execute status.
-     */
     @Override
     public void execute(String argument) {
         try {

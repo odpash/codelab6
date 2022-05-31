@@ -62,7 +62,7 @@ public class MainServer {
         while (!exit.get()) {
             try {
                 DatagramSocket serverSocket = new DatagramSocket(SERVICE_PORT);
-                byte[] receivingDataBuffer = new byte[4096];
+                byte[] receivingDataBuffer = new byte[1024];
                 DatagramPacket inputPacket = new DatagramPacket(receivingDataBuffer, receivingDataBuffer.length);
                 System.out.println("Waiting for a client to connect...");
                 serverSocket.receive(inputPacket);

@@ -33,7 +33,7 @@ public class RequestSender {
             try{
                 DatagramSocket clientSocket = new DatagramSocket();
                 InetAddress IPAddress = InetAddress.getByName("localhost");
-                byte[] receivingDataBuffer = new byte[4096];
+                byte[] receivingDataBuffer = new byte[1024];
 
                 ByteArrayOutputStream bStream = new ByteArrayOutputStream();
                 ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -55,6 +55,7 @@ public class RequestSender {
                 return result;
             }
             catch (IOException | ClassNotFoundException exc){
+                System.out.println(exc);
                 System.out.println("Не удалось подключиться к серверу, подождем...");
                 attempts++;
                 try {
